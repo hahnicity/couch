@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
@@ -10,9 +9,15 @@ setup(
     author="Gregory Rehm",
     author_email="grehm87@gmail.com",
     version=__version__,
-    description="A web framework for slothpal to lounge around on"
+    description="A web framework for slothpal to lounge around on",
+    packages=find_packages(),
+    entry_points={
+        "console_scripts": [
+            "couch=couch.main:main",
+        ],
+    },
     install_requires=[
         "slothpal",
-        "tornado"
+        "tornado>=3.1",
     ],
 )
