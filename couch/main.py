@@ -8,7 +8,7 @@ from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 from tornado.web import Application, StaticFileHandler
 
-from couch.handlers import BasicHandler
+from couch.handlers import BasicHandler, PostHandler
 
 
 def define_options():
@@ -26,6 +26,7 @@ def start_service():
     app = Application([
         (r"/favicon.ico", StaticFileHandler, {"path": "/var/www/media/images/favicon.ico"}),
         (r"/", BasicHandler),
+        (r"/post", PostHandler)
     ])
     app.listen(options.port)
     IOLoop.instance().start()
