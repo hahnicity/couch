@@ -11,6 +11,7 @@ setup(
     version=__version__,
     description="A web framework for slothpal to lounge around on",
     packages=find_packages(),
+    package_data={"*": ["*.html"]},
     entry_points={
         "console_scripts": [
             "couch=couch.main:main",

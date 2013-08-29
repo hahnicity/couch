@@ -4,11 +4,15 @@ couch.main
 
 CLI to start couch service
 """
+from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
-from tornado.web import Application, StaticFileHandler
+# XXX unimplemented
+#from tornado.web import StaticFileHandler
 
-from couch.handlers import BasicHandler, PostHandler
+from couch.application import CouchApplication
+# XXX unimplemented
+#from couch.handlers import BasicHandler, PostHandler
 
 
 def define_options():
@@ -23,12 +27,8 @@ def start_service():
     """
     Initialize the webapp
     """
-    app = Application([
-        (r"/favicon.ico", StaticFileHandler, {"path": "/var/www/media/images/favicon.ico"}),
-        (r"/", BasicHandler),
-        (r"/post", PostHandler)
-    ])
-    app.listen(options.port)
+    http_server = HTTPServer(CouchApplication())
+    http_server.listen(options.port)
     IOLoop.instance().start()
 
 
