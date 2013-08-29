@@ -19,6 +19,6 @@ setup(
     },
     install_requires=[
         "slothpal",
-        "tornado>=3.1",
+        "flask",
     ],
 )
