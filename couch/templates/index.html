@@ -1,0 +1,13 @@
+<span id="paypalContainer"></span>
+<script src="https://www.paypalobjects.com/js/external/api.js"></script>
+<script>
+paypal.use( ["login"], function(login) {
+  login.render ({
+    "appid": {{ app.id }},
+    "scopes": "profile email address phone https://uri.paypal.com/services/paypalattributes",
+    "containerid": "paypalContainer",
+    "locale": "en-us",
+    "returnurl": {{ base_url }}
+  });
+});
+</script>
