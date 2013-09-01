@@ -25,6 +25,7 @@ def get_consent_params():
     """
     return {
         "client_id": paypal.id,
+        "endpoint": paypal.endpoint,
         "redirect_uri": paypal.redirect_uri,
         "scope": paypal.scopes,
     }

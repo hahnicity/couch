@@ -2,9 +2,13 @@
 couch.controllers
 ~~~~~~~~~~~~~~~~~
 """
-from flask import redirect, render_template, request, session
-from slothpal.oauth import get_expiry_time, make_consent_url
+from time import time
 
+from flask import redirect, render_template, request, session
+from slothpal.exceptions import StatusCodeError
+from slothpal.oauth import make_consent_url
+
+from couch.cookie import make_secure_oauth_cookie
 from couch.thirdparty import get_button_config, get_consent_params
 
 
@@ -29,9 +33,9 @@ def create_routes(app, oauth):
         Page where customers can begin the donation process
         """
         if "token" not in session:
-            redirect(make_consent_url(get_consent_params()))
-            # XXX Do some redirect magic to paypal oauth
-            pass
+            return redirect(make_consent_url(**get_consent_params()))
+        else:
+            _check_if_token_expired()
 
         return "Donations"
 
@@ -47,6 +51,28 @@ def create_routes(app, oauth):
         button_config = get_button_config()
         return render_template("index.html", button_config=button_config)
 
+    def _check_if_token_expired():
+        """
+        Check to see if the user's bearer token is expired. If it is attempt
+        to get a new token.
+        """
+        if session["token"]["expiry"] < time():
+            _handle_expired_tokens()
+
+    def _handle_expired_tokens():
+        """
+        Attempt to obtain a new token using the refresh token. It that doesn't
+        work, re-direct the user to the PayPal login
+        """
+        try:
+            response = oauth.use_refresh_token(
+                session["token"]["paypal_session"]["refresh_token"]
+            )
+        except StatusCodeError:
+            redirect(make_consent_url(**get_consent_params()))
+        else:
+            session["token"] = make_secure_oauth_cookie(response)
+
     def _generate_session():
         """
         Handle the case when a user is redirected from PayPal back to the
@@ -54,9 +80,5 @@ def create_routes(app, oauth):
         """
         if "token" not in session:
             # XXX There will need to be error handling for bad responses
-            access_response = oauth.exchange_auth_code(request.args.get("code"))
-            cookie = {
-                "session": access_response,
-                "expiry": get_expiry_time(access_response)
-            }
-            session["token"] = cookie
+            response = oauth.exchange_auth_code(request.args.get("code"))
+            session["token"] = make_secure_oauth_cookie(response)
