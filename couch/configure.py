@@ -100,6 +100,6 @@ def make_oauth(args):
     """
     Configure initial oauth and get a token
     """
-    oauth = OAuth(paypal["endpoint"], get_app_id(args), get_app_secret(args))
+    oauth = OAuth(paypal.endpoint, get_app_id(args), get_app_secret(args))
     oauth.request_token()
     return oauth
