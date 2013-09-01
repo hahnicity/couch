@@ -4,8 +4,10 @@ couch.main
 """
 from argparse import ArgumentParser
 
+from slothpal.context import paypal_context
+
 from couch.app import create_app
-from couch.configure import configure_app, make_oauth
+from couch.configure import configure_app, configure_paypal, make_oauth
 
 
 def parse_argv():
@@ -60,6 +62,7 @@ def main():
     """
     args = parse_argv()
     app = create_app()
-    oauth = make_oauth(args)
-    configure_app(app, args, oauth)
-    app.run(host=app.config["HOST"], port=args.port)
+    with paypal_context(configure_paypal(args)):
+        oauth = make_oauth(args)
+        configure_app(app, args, oauth)
+        app.run(host=app.config["HOST"], port=args.port)

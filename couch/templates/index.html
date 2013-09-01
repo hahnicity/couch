@@ -3,14 +3,14 @@
 <script>
 paypal.use( ["login"], function(login) {
   login.render ({
-    "appid": "{{ homepage_config.client_id }}",
-    {% if homepage_config.is_sandbox %}
+    "appid": "{{ button_config.client_id }}",
+    {% if button_config.is_sandbox %}
     "authend": "sandbox",
     {% endif %}
-    "scopes": "{{ homepage_config.scopes }}",
+    "scopes": "{{ button_config.scopes }}",
     "containerid": "paypalContainer",
     "locale": "en-us",
-    "returnurl": "{{ homepage_config.base_url }}"
+    "returnurl": "{{ button_config.redirect_uri }}"
   });
 });
 </script>
