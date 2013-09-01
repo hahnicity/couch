@@ -5,7 +5,7 @@ couch.main
 from argparse import ArgumentParser
 
 from couch.app import create_app
-from couch.configure import configure_app, get_host, get_oauth
+from couch.configure import configure_app, make_oauth
 
 
 def parse_argv():
@@ -60,6 +60,6 @@ def main():
     """
     args = parse_argv()
     app = create_app()
-    oauth = get_oauth(args)
+    oauth = make_oauth(args)
     configure_app(app, args, oauth)
-    app.run(host=get_host(args), port=args.port)
+    app.run(host=app.config["HOST"], port=args.port)

@@ -1,13 +1,16 @@
-<span id="paypalContainer"></span>
+<span id="paypalContainer" onClick="javascript:paypal.use"></span>
 <script src="https://www.paypalobjects.com/js/external/api.js"></script>
 <script>
 paypal.use( ["login"], function(login) {
   login.render ({
-    "appid": {{ app.id }},
-    "scopes": "profile email address phone https://uri.paypal.com/services/paypalattributes",
+    "appid": "{{ homepage_config.client_id }}",
+    {% if homepage_config.is_sandbox %}
+    "authend": "sandbox",
+    {% endif %}
+    "scopes": "{{ homepage_config.scopes }}",
     "containerid": "paypalContainer",
     "locale": "en-us",
-    "returnurl": {{ base_url }}
+    "returnurl": "{{ homepage_config.base_url }}"
   });
 });
 </script>
